@@ -11,6 +11,12 @@ import (
 	"github.com/samsarahq/thunder/reactive"
 )
 
+type ContextKey string
+
+const (
+	HeaderKey ContextKey = "header"
+)
+
 func HTTPHandler(schema *Schema, middlewares ...MiddlewareFunc) http.Handler {
 	return &httpHandler{
 		schema:      schema,
@@ -85,8 +91,10 @@ func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var wg sync.WaitGroup
 	e := Executor{}
 
+	ctx := context.WithValue(r.Context(), HeaderKey, r.Header)
+
 	wg.Add(1)
-	runner := reactive.NewRerunner(r.Context(), func(ctx context.Context) (interface{}, error) {
+	runner := reactive.NewRerunner(ctx, func(ctx context.Context) (interface{}, error) {
 		defer wg.Done()
 
 		ctx = batch.WithBatching(ctx)
