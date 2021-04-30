@@ -91,10 +91,8 @@ func (h *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var wg sync.WaitGroup
 	e := Executor{}
 
-	ctx := context.WithValue(r.Context(), HeaderKey, r.Header)
-
 	wg.Add(1)
-	runner := reactive.NewRerunner(ctx, func(ctx context.Context) (interface{}, error) {
+	runner := reactive.NewRerunner(context.WithValue(r.Context(), HeaderKey, r.Header), func(ctx context.Context) (interface{}, error) {
 		defer wg.Done()
 
 		ctx = batch.WithBatching(ctx)
