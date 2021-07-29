@@ -61,7 +61,7 @@ func parseGraphQLFieldInfo(field reflect.StructField) (*graphQLFieldInfo, error)
 	if field.PkgPath != "" {
 		return &graphQLFieldInfo{Skipped: true}, nil
 	}
-	tags := strings.Split(field.Tag.Get("graphql"), ",")
+	tags := strings.Split(field.Tag.Get("json"), ",")
 	var name string
 	if len(tags) > 0 {
 		name = tags[0]
